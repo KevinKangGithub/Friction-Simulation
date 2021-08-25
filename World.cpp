@@ -1,4 +1,5 @@
 #include "World.h"
+#include "Constants.h"
 
 World::World() {};
 World::~World() {};
@@ -7,31 +8,37 @@ std::vector<Object> World::getObjects() const {
     return objects;
 }
 
+void World::handleWallCollision(Object& o) {
+    float posX = o.getPosition().x;
+    float posY = o.getPosition().y;
+    float windowMinX = 0.f;
+    float windowMaxX = WINDOW_WIDTH - o.getSize().x;
+    float windowMinY = 0.f;
+    float windowMaxY = WINDOW_HEIGHT - o.getSize().y;
+
+    if (posX < windowMinX) {
+        o.setPosition(windowMinX, posY);
+        o.setVelocity(sf::Vector2f(-o.getVelocity().x, o.getVelocity().y));
+    } 
+    else if (posX > windowMaxX) {
+        o.setPosition(windowMaxX, posY);
+        o.setVelocity(sf::Vector2f(-o.getVelocity().x, o.getVelocity().y));
+    }
+    if (posY < windowMinY) {
+        o.setPosition(posX, windowMinY);
+        o.setVelocity(sf::Vector2f(o.getVelocity().x, -o.getVelocity().y));
+    }
+    if (posY > windowMaxY) {
+        o.setPosition(posX, windowMaxY);
+        o.setVelocity(sf::Vector2f(o.getVelocity().x, -o.getVelocity().y));
+    }
+}
+
 void World::handleCollisions() {
     for (size_t i = 0; i < objects.size(); i++) {
+
         Object& obj = objects.at(i);
-/*
-        //left collision
-        if (getPosition().x < getRadius()) {
-            setPosition(getRadius(), getPosition().y);
-            setVelocity(-getVelocity().x, getVelocity().y);
-        }
-        //right bound collision
-        else if (getPosition().x > WINDOW_WIDTH - getRadius()) {
-            setPosition(WINDOW_WIDTH - getRadius(), getPosition().y);
-            setVelocity(-getVelocity().x, getVelocity().y);
-        }
-        //top collision
-        if (getPosition().y < getRadius()) {
-            setPosition(getPosition().x, getRadius());
-            setVelocity(getVelocity().x, -getVelocity().y);
-        }
-        //bottom collision
-        else if (getPosition().y > WINDOW_HEIGHT - getRadius()) {
-            setPosition(getPosition().x, WINDOW_HEIGHT - getRadius());
-            setVelocity(getVelocity().x, -getVelocity().y);
-        }
-        */
+        handleWallCollision(obj);
     }
 }
 

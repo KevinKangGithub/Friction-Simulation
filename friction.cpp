@@ -39,7 +39,7 @@ int main()
                     sf::Vector2f size(50.f, 50.f);
 
                     Object o = Object(mousePos, size);
-                    o.setVelocity(sf::Vector2f(1.f, 1.f));
+                    o.setVelocity(sf::Vector2f(-1.f, -1.f));
                     //add a new object, temp implementation for now
                     world.addObject(o);
                 }

@@ -12,6 +12,7 @@ public:
     std::vector<Object> getObjects() const;
 
     void updateObjects(float deltatime);
+    void handleWallCollision(Object& o);
     void handleCollisions();
     void addObject(Object o);
 
