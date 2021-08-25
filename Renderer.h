@@ -7,14 +7,14 @@
 class Renderer
 {
 public:
-	Renderer(World& world);
-	~Renderer();
+    Renderer(World& world);
+    ~Renderer();
 
-	void render(sf::RenderWindow& window) const;
-	void renderObjects(sf::RenderWindow& window) const;
-	
+    void render(sf::RenderWindow& window) const;
+    void renderObjects(sf::RenderWindow& window) const;
+    
 private:
-	World& world;
+    World& world;
 };
 
 #endif

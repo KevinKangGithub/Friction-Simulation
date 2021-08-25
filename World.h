@@ -6,18 +6,18 @@
 class World {
 
 public: 
-	World();
-	~World();
-	
-	std::vector<Object> getObjects() const;
+    World();
+    ~World();
+    
+    std::vector<Object> getObjects() const;
 
-	void updateObjects(float deltatime);
-	void handleCollisions();
-	void addObject(Object o);
+    void updateObjects(float deltatime);
+    void handleCollisions();
+    void addObject(Object o);
 
 private:
 
-	std::vector<Object> objects;
+    std::vector<Object> objects;
 
 }; 
 
