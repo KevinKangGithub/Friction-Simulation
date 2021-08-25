@@ -10,7 +10,8 @@
     - add ability to draw objects with different sizes
     - 
     - rotation of objects
-    - object collisions with each other and the window
+    - fix object collisions with the window
+    - add object collision with each other
 */
 
 int main()
@@ -38,8 +39,8 @@ int main()
                     sf::Vector2f mousePos(((float) (sf::Mouse::getPosition(window).x)), ((float) (sf::Mouse::getPosition(window).y)));
                     sf::Vector2f size(50.f, 50.f);
 
-                    Object o = Object(mousePos, size);
-                    o.setVelocity(sf::Vector2f(-1.f, -1.f));
+                    Object o = Object(mousePos, size, 3.f);
+                    o.setVelocity(sf::Vector2f(1.f, 1.f));
                     //add a new object, temp implementation for now
                     world.addObject(o);
                 }
