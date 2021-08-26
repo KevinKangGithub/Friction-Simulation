@@ -8,7 +8,8 @@ void Renderer::render(sf::RenderWindow& window) const {
 }
 
 void Renderer::renderObjects(sf::RenderWindow& window) const {
-    for (Object obj : world.getObjects()) {
+    for (Object &obj : world.getObjects()) {
         window.draw(obj);
     }
+    
 }

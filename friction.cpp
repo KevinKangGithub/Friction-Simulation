@@ -2,7 +2,8 @@
 #include "Constants.h"
 #include "World.h"
 #include "Renderer.h"
-
+#include <vector>
+#include <iostream>
 /*
     TODO:
     - add surface class
@@ -20,13 +21,17 @@ int main()
     
     World world;
     Renderer renderer(world);
+    TempObject tempObject;
+
     float deltatime = 0.f;
     sf::Clock clock;
 
     while (window.isOpen()) 
     {
         sf::Event event;
+        
         deltatime = clock.restart().asSeconds(); //clock.restart() also returns the elapsed time
+
 
         while (window.pollEvent(event)) 
         {
@@ -35,15 +40,15 @@ int main()
                 window.close();
                 return EXIT_SUCCESS;
             case sf::Event::MouseButtonReleased:
-                if (event.mouseButton.button == sf::Mouse::Left) {
-                    sf::Vector2f mousePos(((float) (sf::Mouse::getPosition(window).x)), ((float) (sf::Mouse::getPosition(window).y)));
-                    sf::Vector2f size(50.f, 50.f);
 
-                    Object o = Object(mousePos, size, 3.f);
-                    o.setVelocity(sf::Vector2f(1.f, 1.f));
-                    //add a new object, temp implementation for now
-                    world.addObject(o);
+                if (event.mouseButton.button == sf::Mouse::Left) {
+                    std::cout << "mousePos: (" << std::to_string(sf::Mouse::getPosition(window).x) << ", " << std::to_string(sf::Mouse::getPosition(window).x) + ")\n";
+
+                    tempObject.addPoint(sf::Mouse::getPosition(window));
                 }
+                
+            case sf::Event::MouseButtonPressed:
+                break;
             }
 
         }
@@ -51,6 +56,7 @@ int main()
         world.updateObjects(deltatime); //update object positions, but do not render the changes
         window.clear();
         renderer.render(window); //draw the updated objects
+        window.draw(tempObject);
         window.display();
     }
 

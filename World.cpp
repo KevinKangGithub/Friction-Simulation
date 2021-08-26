@@ -11,6 +11,7 @@ std::vector<Object> World::getObjects() const {
 void World::handleWallCollision(Object& o) {
     //seperating axis theorem http://programmerart.weebly.com/separating-axis-theorem.html
 
+    /*
     float posX = o.getPosition().x;
     float posY = o.getPosition().y;
     float windowMinX = o.getSize().x / 2;
@@ -36,6 +37,7 @@ void World::handleWallCollision(Object& o) {
         o.setPosition(posX, windowMaxY);
         o.setVelocity(sf::Vector2f(vx * (1 - FRICTION), -vy * (1 - FRICTION)));
     }
+    */
 }
 
 void World::handleCollisions() {
@@ -49,7 +51,7 @@ void World::handleCollisions() {
 void World::updateObjects(float deltatime) {
     for (size_t i = 0; i < objects.size(); i++) {
         objects.at(i).updatePos(deltatime);
-        this->handleCollisions();
+        handleCollisions();
     }
 }
 

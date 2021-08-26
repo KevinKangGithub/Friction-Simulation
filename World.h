@@ -2,6 +2,7 @@
 #define WORLD
 #include <vector>
 #include "Object.h"
+#include "TempObject.h"
 
 class World {
 
@@ -15,6 +16,8 @@ public:
     void handleWallCollision(Object& o);
     void handleCollisions();
     void addObject(Object o);
+
+    TempObject* tempObject;
 
 private:
 

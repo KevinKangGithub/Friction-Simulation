@@ -1,23 +1,48 @@
 #include "Object.h"
 #include "Constants.h"
 #include <vector>
+#include <iostream>
 
-sf::Vector2f Object::calcCentroid(Object &o) {
+sf::Vector2f Object::calcTopLeft(Object& o) {
+    //algorithm to find the top left bounding corner of the object in global coordinates
+    //minimize these two points, so initialize them to be larger that possible;
+    float leftMostPoint = WINDOW_WIDTH + 1;
+    float highestPoint = WINDOW_HEIGHT + 1;
+    float xPos, yPos;
+    for (size_t i = 0; i < o.getPointCount(); i++) {
+        xPos = o.getPoint(i).x;
+        yPos = o.getPoint(i).y;
+        if (xPos < leftMostPoint) leftMostPoint = xPos;
+        if (yPos < highestPoint) highestPoint = yPos;
+    }
+   
+    return sf::Vector2f(leftMostPoint, highestPoint);
+}
+
+sf::Vector2f Object::calcCentroid(Object& o) {
     // https://en.wikipedia.org/wiki/Centroid#Of_a_polygon
-
-    float A = 1 / (6 * calcMass(o));
+    // point MUST be organized in counter-clockwise order for this to work
+    float A = 1.f / (6.f * o.getMass());
     float Cx = 0.f;
     float Cy = 0.f;
+    float xi, xi1, yi, yi1;
 
     for (size_t i = 0; i < o.getPointCount() - 1; i++) {
-        float xi = o.getPoint(i).x;
-        float xi1 = o.getPoint(i + 1).x;
-        float yi = o.getPoint(i).y;
-        float yi1 = o.getPoint(i + 1).y;
+        xi = o.getPoint(i).x;
+        xi1 = o.getPoint(i + 1).x;
+        yi = o.getPoint(i).y;
+        yi1 = o.getPoint(i + 1).y;
 
         Cx += (xi + xi1) * (xi * yi1 - xi1 * yi);
         Cy += (yi + yi1) * (xi * yi1 - xi1 * yi);
     }
+
+    xi = o.getPoint(o.getPointCount() - 1).x;
+    xi1 = o.getPoint(0).x;
+    yi = o.getPoint(o.getPointCount() - 1).y;
+    yi1 = o.getPoint(0).y;
+    Cx += (xi + xi1) * (xi * yi1 - xi1 * yi);
+    Cy += (yi + yi1) * (xi * yi1 - xi1 * yi);
 
     return sf::Vector2f(Cx * A, Cy * A);
 }
@@ -27,30 +52,31 @@ float Object::calcMass(Object &o) {
 
     float totalMass = 0.f;
     size_t pointCount = o.getPointCount();
-    
+       
     for (size_t i = 0; i < pointCount - 1; i++) {
         totalMass += o.getPoint(i).x * o.getPoint(i + 1).y;
         totalMass -= o.getPoint(i + 1).x * o.getPoint(i).y;
     }
     
-    totalMass += o.getPoint(pointCount).x * o.getPoint(0).y;
-    totalMass -= o.getPoint(0).x * o.getPoint(pointCount).y;
-
-    return totalMass / 2;
+    totalMass += o.getPoint(pointCount - 1).x * o.getPoint(0).y;
+    totalMass -= o.getPoint(0).x * o.getPoint(pointCount - 1).y;
+    return std::abs(totalMass / 2);
 }
 
-Object::Object(std::vector<sf::Vector2f> points, float rv) {
+Object::Object(std::vector<sf::Vector2f> points, sf::Vector2f pos, float rv) {
     setPointCount(points.size());
     
     for (size_t i = 0; i < points.size(); i++) {
         setPoint(i, points.at(i));
     }
 
-    sf::Vector2f centerOfMass = calcCentroid(*this);
-    setOrigin(centerOfMass);
-    setPosition(centerOfMass);
     mass = calcMass(*this);
-    setRotationalVelocity(rv);
+    sf::Vector2f globalCenterOfMass = calcCentroid(*this);
+    sf::Vector2f globalTopLeft = calcTopLeft(*this);
+    std::cout << "gCen - gTL = {" << std::to_string(globalCenterOfMass.x) << " - " << std::to_string(globalTopLeft.x) << +", " << std::to_string(globalCenterOfMass.y) << " - " << std::to_string(globalTopLeft.y) << +"}\n";
+    setPosition(pos);
+    setOrigin(globalCenterOfMass.x - globalTopLeft.x, globalCenterOfMass.y - globalTopLeft.y);
+    setRotationalVelocity(0.f);
 };
 Object::~Object() {};
 
