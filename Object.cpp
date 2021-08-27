@@ -64,6 +64,7 @@ float Object::calcMass(Object &o) {
 }
 
 Object::Object(std::vector<sf::Vector2f> points, sf::Vector2f pos, float rv) {
+    //the problem is that the points are local to the object, not the global window
     setPointCount(points.size());
     
     for (size_t i = 0; i < points.size(); i++) {
@@ -73,7 +74,6 @@ Object::Object(std::vector<sf::Vector2f> points, sf::Vector2f pos, float rv) {
     mass = calcMass(*this);
     sf::Vector2f globalCenterOfMass = calcCentroid(*this);
     sf::Vector2f globalTopLeft = calcTopLeft(*this);
-    std::cout << "gCen - gTL = {" << std::to_string(globalCenterOfMass.x) << " - " << std::to_string(globalTopLeft.x) << +", " << std::to_string(globalCenterOfMass.y) << " - " << std::to_string(globalTopLeft.y) << +"}\n";
     setPosition(pos);
     setOrigin(globalCenterOfMass.x - globalTopLeft.x, globalCenterOfMass.y - globalTopLeft.y);
     setRotationalVelocity(0.f);

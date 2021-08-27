@@ -22,41 +22,47 @@ int main()
     World world;
     Renderer renderer(world);
     TempObject tempObject;
+    bool makingTempObject = false;
+    
+    world.tempObject = &tempObject;
 
     float deltatime = 0.f;
     sf::Clock clock;
+    sf::Vector2i mousePos;
 
     while (window.isOpen()) 
     {
         sf::Event event;
         
         deltatime = clock.restart().asSeconds(); //clock.restart() also returns the elapsed time
-
-
-        while (window.pollEvent(event)) 
+        mousePos = sf::Mouse::getPosition(window);
+        tempObject.setTempLinePos2(mousePos);
+        
+        while (window.pollEvent(event))
         {
             switch (event.type) {
-                case sf::Event::Closed:
+            case sf::Event::Closed:
                 window.close();
                 return EXIT_SUCCESS;
             case sf::Event::MouseButtonReleased:
-
                 if (event.mouseButton.button == sf::Mouse::Left) {
-                    std::cout << "mousePos: (" << std::to_string(sf::Mouse::getPosition(window).x) << ", " << std::to_string(sf::Mouse::getPosition(window).x) + ")\n";
-
-                    tempObject.addPoint(sf::Mouse::getPosition(window));
+                    if (tempObject.getVertexCount() == 0) tempObject.setInitialPos(mousePos);
+                    tempObject.addPoint(mousePos);
                 }
-                
-            case sf::Event::MouseButtonPressed:
+                makingTempObject = false;
                 break;
+            case sf::Event::MouseButtonPressed:
+                if (event.mouseButton.button == sf::Mouse::Left) makingTempObject = true;
             }
-
         }
 
         world.updateObjects(deltatime); //update object positions, but do not render the changes
         window.clear();
+
+        if (makingTempObject) {
+            window.draw(tempObject.getTempLine());
+        }
         renderer.render(window); //draw the updated objects
-        window.draw(tempObject);
         window.display();
     }
 

@@ -11,5 +11,6 @@ void Renderer::renderObjects(sf::RenderWindow& window) const {
     for (Object &obj : world.getObjects()) {
         window.draw(obj);
     }
-    
+    TempObject t = *world.tempObject;
+    t.drawVertexArray(window);
 }
