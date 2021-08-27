@@ -48,6 +48,15 @@ int main()
                 if (event.mouseButton.button == sf::Mouse::Left) {
                     if (tempObject.getVertexCount() == 0) tempObject.setInitialPos(mousePos);
                     tempObject.addPoint(mousePos);
+
+                    std::cout << std::to_string(tempObject.getInitialPos().x) + "==?" + std::to_string(mousePos.x) + ", " + std::to_string(tempObject.getInitialPos().y) + "==?" + std::to_string(mousePos.y) + "\n";
+                    if (tempObject.getVertexCount() > 2 && tempObject.getInitialPos().x == mousePos.x && tempObject.getInitialPos().y == mousePos.y) { 
+                        //TODO method to determine if the mouse is "close enough" to the first vertex position
+                        //TODO method to sort points in clockwise or counterclockwise order for the centroid and mass methods to work correctly
+                        world.addObject(tempObject.toObject());
+                        tempObject = TempObject();
+                        std::cout << "made new object\n";
+                    }
                 }
                 makingTempObject = false;
                 break;
@@ -62,6 +71,7 @@ int main()
         if (makingTempObject) {
             window.draw(tempObject.getTempLine());
         }
+
         renderer.render(window); //draw the updated objects
         window.display();
     }

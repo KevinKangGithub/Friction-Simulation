@@ -37,13 +37,6 @@ sf::Vector2f Object::calcCentroid(Object& o) {
         Cy += (yi + yi1) * (xi * yi1 - xi1 * yi);
     }
 
-    xi = o.getPoint(o.getPointCount() - 1).x;
-    xi1 = o.getPoint(0).x;
-    yi = o.getPoint(o.getPointCount() - 1).y;
-    yi1 = o.getPoint(0).y;
-    Cx += (xi + xi1) * (xi * yi1 - xi1 * yi);
-    Cy += (yi + yi1) * (xi * yi1 - xi1 * yi);
-
     return sf::Vector2f(Cx * A, Cy * A);
 }
 
@@ -52,14 +45,12 @@ float Object::calcMass(Object &o) {
 
     float totalMass = 0.f;
     size_t pointCount = o.getPointCount();
-       
+
     for (size_t i = 0; i < pointCount - 1; i++) {
         totalMass += o.getPoint(i).x * o.getPoint(i + 1).y;
         totalMass -= o.getPoint(i + 1).x * o.getPoint(i).y;
     }
     
-    totalMass += o.getPoint(pointCount - 1).x * o.getPoint(0).y;
-    totalMass -= o.getPoint(0).x * o.getPoint(pointCount - 1).y;
     return std::abs(totalMass / 2);
 }
 
@@ -77,6 +68,8 @@ Object::Object(std::vector<sf::Vector2f> points, sf::Vector2f pos, float rv) {
     setPosition(pos);
     setOrigin(globalCenterOfMass.x - globalTopLeft.x, globalCenterOfMass.y - globalTopLeft.y);
     setRotationalVelocity(0.f);
+    setFillColor(sf::Color::White);
+    setOutlineColor(sf::Color::White);
 };
 Object::~Object() {};
 

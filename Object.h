@@ -26,7 +26,7 @@ public:
 private: 
     
     sf::Vector2f velocity;
-    float rotationalVelocity; //degrees per second
+    float rotationalVelocity; //degrees per second clockwise
     float mass;
 
 };

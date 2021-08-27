@@ -11,6 +11,7 @@ public:
     void addPoint(sf::Vector2i point);
     void setInitialPos(sf::Vector2i point);
     void drawVertexArray(sf::RenderWindow &w);
+    sf::Vector2i getInitialPos() const;
     Object toObject();
     void setTempLinePos2(sf::Vector2i);
 
