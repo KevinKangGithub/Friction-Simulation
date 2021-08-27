@@ -1,5 +1,5 @@
-#ifndef WORLD
-#define WORLD
+#ifndef WORLD_H
+#define WORLD_H
 #include <vector>
 #include "Object.h"
 #include "TempObject.h"

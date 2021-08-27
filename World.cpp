@@ -1,7 +1,9 @@
 #include "World.h"
 #include "Constants.h"
 
-World::World() {};
+World::World() {
+    tempObject = nullptr;
+};
 World::~World() {};
 
 std::vector<Object> World::getObjects() const {

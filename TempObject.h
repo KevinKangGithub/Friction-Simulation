@@ -1,4 +1,5 @@
-#pragma once
+#ifndef TEMPOBJECT_H
+#define TEMPOBJECT_H
 #include <SFML/Graphics.hpp>
 #include "Object.h"
 
@@ -8,13 +9,15 @@ public:
 
     TempObject();
     ~TempObject();
+    Object toObject();
+
     void addPoint(sf::Vector2i point);
     void setInitialPos(sf::Vector2i point);
     void drawVertexArray(sf::RenderWindow &w);
-    sf::Vector2i getInitialPos() const;
-    Object toObject();
+
     void setTempLinePos2(sf::Vector2i);
 
+    sf::Vector2i getInitialPos() const;
     size_t getVertexCount() const;
     sf::VertexArray getTempLine() const;
 
@@ -26,3 +29,4 @@ private:
 
 };
 
+#endif

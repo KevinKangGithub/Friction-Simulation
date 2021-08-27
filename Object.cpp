@@ -87,12 +87,12 @@ void Object::setVelocity(sf::Vector2f v) {
     velocity = v;
 }
 
-sf::Vector2f Object::getVelocity() const {
-    return velocity;
-}
-
 void Object::setRotationalVelocity(float rv) {
     rotationalVelocity = rv;
+}
+
+sf::Vector2f Object::getVelocity() const {
+    return velocity;
 }
 
 float Object::getRotationalVelocity() const {
