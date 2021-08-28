@@ -1,7 +1,6 @@
 #include "Object.h"
 #include "Constants.h"
 #include <vector>
-#include <iostream>
 
 sf::Vector2f Object::calcTopLeft(Object& o) {
     //algorithm to find the top left bounding corner of the object in global coordinates
@@ -55,28 +54,26 @@ float Object::calcMass(Object &o) {
 }
 
 Object::Object(std::vector<sf::Vector2f> points, sf::Vector2f pos, float rv) {
-    //the problem is that the points are local to the object, not the global window
     setPointCount(points.size());
     
     for (size_t i = 0; i < points.size(); i++) {
         setPoint(i, points.at(i));
     }
-
+    this;
     mass = calcMass(*this);
     sf::Vector2f globalCenterOfMass = calcCentroid(*this);
     sf::Vector2f globalTopLeft = calcTopLeft(*this);
     setPosition(pos);
     setOrigin(globalCenterOfMass.x - globalTopLeft.x, globalCenterOfMass.y - globalTopLeft.y);
-    setRotationalVelocity(0.f);
-    setFillColor(sf::Color::White);
-    setOutlineColor(sf::Color::White);
+    setRotationalVelocity(0.5f);
 };
 Object::~Object() {};
 
 void Object::updatePos(float deltatime) {
+    this;
     float accelX = -velocity.x * (1 - FRICTION) * deltatime;
     float accelY = -velocity.y * (1 - FRICTION) * deltatime + GRAVITY * deltatime;
-    float accelR = -rotationalVelocity * (1 - FRICTION) * deltatime;
+    float accelR = rotationalVelocity * (1 - FRICTION) * deltatime;
     setVelocity(sf::Vector2f(velocity.x + accelX, velocity.y + accelY));
     setRotationalVelocity(rotationalVelocity + accelR);
     move(velocity);
