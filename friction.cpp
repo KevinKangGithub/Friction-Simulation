@@ -3,6 +3,7 @@
 #include "World.h"
 #include "Renderer.h"
 #include <vector>
+#include <iostream>
 /*
     TODO:
     - add surface class
@@ -19,6 +20,13 @@ int main()
     World world;
     Renderer renderer(world);
     TempObject tempObject;
+    TempObject test = TempObject();
+    test.setInitialPos(sf::Vector2i(400, 200));
+    test.addPoint(sf::Vector2i(400, 200));
+    test.addPoint(sf::Vector2i(375, 375));
+    test.addPoint(sf::Vector2i(1000, 900));
+    test.addPoint(sf::Vector2i(400, 200));
+    world.addObject(test.toObject());
     world.tempObject = &tempObject;
     sf::Clock clock;
     sf::Vector2i mousePos;
@@ -45,13 +53,15 @@ int main()
             case sf::Event::MouseButtonReleased:
                 if (event.mouseButton.button == sf::Mouse::Left) 
                 {
-                    tempObject.addPoint(mousePos);
                     
-                    if (tempObject.getVertexCount() == 0) tempObject.setInitialPos(mousePos);
-
+                    tempObject.addPoint(mousePos);
+                    std::cout<<"mousePos: { " + std::to_string(mousePos.x) + ", " + std::to_string(mousePos.y) + " }\n";
+                    std::cout<<"initialPos: { " + std::to_string(tempObject.getInitialPos().x) + ", " + std::to_string(tempObject.getInitialPos().y) + " }\n";
                     if (tempObject.getVertexCount() > 2 && tempObject.getInitialPos().x == mousePos.x && tempObject.getInitialPos().y == mousePos.y) { 
                         //TODO method to determine if the mouse is "close enough" to the first vertex position
-                        //TODO method to sort points in clockwise or counterclockwise order for the centroid and mass methods to work correctly
+                        //TODO method to sort points in clockwise or counterclockwise order for the centroid and mass methods 
+                        //     to work correctly or make it so that you can't draw points
+                        //     
                         world.addObject(tempObject.toObject());
                         tempObject = TempObject();
                     }
@@ -61,6 +71,10 @@ int main()
                 break;
 
             case sf::Event::MouseButtonPressed:
+                if (tempObject.getInitialPos().x + tempObject.getInitialPos().y == 0) {
+                    tempObject.addPoint(mousePos);
+                    tempObject.setInitialPos(mousePos);
+                }
                 if (event.mouseButton.button == sf::Mouse::Left) addingNewVertex = true;
                 break;
             }
@@ -71,6 +85,8 @@ int main()
 
         if (addingNewVertex) {
             window.draw(tempObject.getTempLine());
+
+
         }
 
         renderer.render(window); //draw the updated objects

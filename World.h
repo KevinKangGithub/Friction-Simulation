@@ -14,6 +14,7 @@ public:
 
     void updateObjects(float deltatime);
     void handleWallCollision(Object& o);
+    void handleObjectCollision(Object& o1, Object& o2);
     void handleCollisions();
     void addObject(Object o);
 

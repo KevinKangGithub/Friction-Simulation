@@ -2,22 +2,6 @@
 #include "Constants.h"
 #include <vector>
 
-sf::Vector2f Object::calcTopLeft(Object& o) {
-    //algorithm to find the top left bounding corner of the object in global coordinates
-    //minimize these two points, so initialize them to be larger that possible;
-    float leftMostPoint = WINDOW_WIDTH + 1;
-    float highestPoint = WINDOW_HEIGHT + 1;
-    float xPos, yPos;
-    for (size_t i = 0; i < o.getPointCount(); i++) {
-        xPos = o.getPoint(i).x;
-        yPos = o.getPoint(i).y;
-        if (xPos < leftMostPoint) leftMostPoint = xPos;
-        if (yPos < highestPoint) highestPoint = yPos;
-    }
-   
-    return sf::Vector2f(leftMostPoint, highestPoint);
-}
-
 sf::Vector2f Object::calcCentroid(Object& o) {
     // https://en.wikipedia.org/wiki/Centroid#Of_a_polygon
     // point MUST be organized in counter-clockwise order for this to work
@@ -41,6 +25,7 @@ sf::Vector2f Object::calcCentroid(Object& o) {
 
 float Object::calcMass(Object &o) {
     // https://en.wikipedia.org/wiki/Shoelace_formula
+    // point must be organized in counter-clockwise order to get a positive result
 
     float totalMass = 0.f;
     size_t pointCount = o.getPointCount();
@@ -50,7 +35,7 @@ float Object::calcMass(Object &o) {
         totalMass -= o.getPoint(i + 1).x * o.getPoint(i).y;
     }
     
-    return std::abs(totalMass / 2);
+    return (totalMass / 2);
 }
 
 Object::Object(std::vector<sf::Vector2f> points, sf::Vector2f pos, float rv) {
@@ -59,21 +44,19 @@ Object::Object(std::vector<sf::Vector2f> points, sf::Vector2f pos, float rv) {
     for (size_t i = 0; i < points.size(); i++) {
         setPoint(i, points.at(i));
     }
-    this;
+
     mass = calcMass(*this);
-    sf::Vector2f globalCenterOfMass = calcCentroid(*this);
-    sf::Vector2f globalTopLeft = calcTopLeft(*this);
+    sf::Vector2f localCenterOfMass = calcCentroid(*this);
     setPosition(pos);
-    setOrigin(globalCenterOfMass.x - globalTopLeft.x, globalCenterOfMass.y - globalTopLeft.y);
-    setRotationalVelocity(0.5f);
+    setOrigin(localCenterOfMass.x, localCenterOfMass.y);
+    setRotationalVelocity(rv);
 };
 Object::~Object() {};
 
 void Object::updatePos(float deltatime) {
-    this;
-    float accelX = -velocity.x * (1 - FRICTION) * deltatime;
-    float accelY = -velocity.y * (1 - FRICTION) * deltatime + GRAVITY * deltatime;
-    float accelR = rotationalVelocity * (1 - FRICTION) * deltatime;
+    float accelX = 0.f;//-velocity.x * (1.f - FRICTION) * deltatime;
+    float accelY = 0.f;//-velocity.y * (1.f - FRICTION) * deltatime + GRAVITY * deltatime;
+    float accelR = 0.f;//-rotationalVelocity * (1.f - FRICTION) * deltatime;
     setVelocity(sf::Vector2f(velocity.x + accelX, velocity.y + accelY));
     setRotationalVelocity(rotationalVelocity + accelR);
     move(velocity);

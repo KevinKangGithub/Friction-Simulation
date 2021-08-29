@@ -33,12 +33,16 @@ void TempObject::setInitialPos(sf::Vector2i v) {
     initialPos = v;
 }
 
+void TempObject::setTempLinePos1(sf::Vector2i v) {
+    tempLine[0] = sf::Vertex(sf::Vector2f((float) v.x, (float) v.y), sf::Color::White);
+}
+
 void TempObject::setTempLinePos2(sf::Vector2i v) {
     tempLine[1] = sf::Vertex(sf::Vector2f((float) v.x, (float) v.y), sf::Color::White);
 }
 
 sf::Vector2i TempObject::getInitialPos() const {
-    return sf::Vector2i(vertexArray[0].position.x, vertexArray[0].position.y);
+    return initialPos;
 }
 
 size_t TempObject::getVertexCount() const {

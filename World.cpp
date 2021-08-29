@@ -12,41 +12,40 @@ std::vector<Object> World::getObjects() const {
 
 void World::handleWallCollision(Object& o) {
     //seperating axis theorem http://programmerart.weebly.com/separating-axis-theorem.html
+    
+    sf::FloatRect bound = o.getGlobalBounds();
+    float windowMinX = 0;
+    float windowMaxX = WINDOW_WIDTH - bound.width;
+    float windowMinY = 0;
+    float windowMaxY = WINDOW_HEIGHT - bound.height;
+    bool inBounds = false;
+    
 
-    /*
-    float posX = o.getPosition().x;
-    float posY = o.getPosition().y;
-    float windowMinX = o.getSize().x / 2;
-    float windowMaxX = WINDOW_WIDTH - (o.getSize().x / 2);
-    float windowMinY = o.getSize().y / 2;
-    float windowMaxY = WINDOW_HEIGHT - (o.getSize().y / 2);
-    float vx = o.getVelocity().x;
-    float vy = o.getVelocity().y;
 
-    if (posX < windowMinX) {
-        o.setPosition(windowMinX, posY);
-        o.setVelocity(sf::Vector2f(-vx * (1 - FRICTION), vy * (1 - FRICTION)));
-    } 
-    else if (posX > windowMaxX) {
-        o.setPosition(windowMaxX, posY);
-        o.setVelocity(sf::Vector2f(-vx * (1 - FRICTION), vy * (1 - FRICTION)));
+    if (inBounds) {
+        //do seperating axis theorem
     }
-    if (posY < windowMinY) {
-        o.setPosition(posX, windowMinY);
-        o.setVelocity(sf::Vector2f(vx * (1 - FRICTION), -vy * (1 - FRICTION)));
-    }
-    else if (posY > windowMaxY) {
-        o.setPosition(posX, windowMaxY);
-        o.setVelocity(sf::Vector2f(vx * (1 - FRICTION), -vy * (1 - FRICTION)));
-    }
-    */
+}
+
+void World::handleObjectCollision(Object& o1, Object& o2) {
+
 }
 
 void World::handleCollisions() {
     for (size_t i = 0; i < objects.size(); i++) {
-
         Object& obj = objects.at(i);
         handleWallCollision(obj);
+        
+        /* 
+        * this loop is made liks this to prevent objects from colliding with themself and
+        * prevents double checking collisions (dont care if object 2 collides with object 1 
+        * because object 1 already checks with object 2) 
+        */
+
+        for (size_t j = i + i; j < objects.size() - i - 1; j++) {  
+            Object& obj2 = objects.at(j);
+            handleObjectCollision(obj, obj2);
+        }
     }
 }
 

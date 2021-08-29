@@ -10,7 +10,6 @@ public:
     Object(std::vector<sf::Vector2f> points, sf::Vector2f pos, float rv = 0);
     ~Object();
 
-    static sf::Vector2f calcTopLeft(Object& o);
     static sf::Vector2f calcCentroid(Object &o); //https://en.wikipedia.org/wiki/Centroid
     static float calcMass(Object &o);
 
