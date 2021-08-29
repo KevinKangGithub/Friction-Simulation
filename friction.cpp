@@ -3,7 +3,6 @@
 #include "World.h"
 #include "Renderer.h"
 #include <vector>
-#include <iostream>
 /*
     TODO:
     - add surface class
@@ -49,15 +48,13 @@ int main()
             case sf::Event::Closed:
                 window.close();
                 return EXIT_SUCCESS;
-            
+
             case sf::Event::MouseButtonReleased:
-                if (event.mouseButton.button == sf::Mouse::Left) 
+                if (event.mouseButton.button == sf::Mouse::Left)
                 {
-                    
+
                     tempObject.addPoint(mousePos);
-                    std::cout<<"mousePos: { " + std::to_string(mousePos.x) + ", " + std::to_string(mousePos.y) + " }\n";
-                    std::cout<<"initialPos: { " + std::to_string(tempObject.getInitialPos().x) + ", " + std::to_string(tempObject.getInitialPos().y) + " }\n";
-                    if (tempObject.getVertexCount() > 2 && tempObject.getInitialPos().x == mousePos.x && tempObject.getInitialPos().y == mousePos.y) { 
+                    if (tempObject.getVertexCount() > 2 && tempObject.getInitialPos().x == mousePos.x && tempObject.getInitialPos().y == mousePos.y) {
                         //TODO method to determine if the mouse is "close enough" to the first vertex position
                         //TODO method to sort points in clockwise or counterclockwise order for the centroid and mass methods 
                         //     to work correctly or make it so that you can't draw points
@@ -76,6 +73,16 @@ int main()
                     tempObject.setInitialPos(mousePos);
                 }
                 if (event.mouseButton.button == sf::Mouse::Left) addingNewVertex = true;
+                break;
+
+
+            case sf::Event::KeyPressed:
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+                    if (tempObject.getVertexCount() > 0) {
+                        tempObject = TempObject();
+                        world.tempObject = &tempObject;
+                    }
+                }
                 break;
             }
         }
