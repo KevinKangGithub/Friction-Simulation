@@ -19,9 +19,10 @@ namespace VectorMath {
         static const int DIRECTION_COLINEAR = 0;
 
         sf::Vector2f topLeftPoint;
+        sf::Vector2f bottomRightPoint;
         std::vector<sf::Vector2f> vertices;
 
-        int getOrientation(const sf::Vector2f &p1, const sf::Vector2f &p2);
+        int getOrientation(const sf::Vector2f &origin, const sf::Vector2f &p1, const sf::Vector2f &p2);
         bool compare(const sf::Vector2f &v1, const sf::Vector2f &v2);
 
     };

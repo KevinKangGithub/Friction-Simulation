@@ -16,46 +16,62 @@ float VectorMath::distanceSquared(const sf::Vector2f& v1, const sf::Vector2f& v2
 }
 
 VectorMath::ConvexHullSolver::ConvexHullSolver(std::vector<sf::Vector2f> vertices) {
-    this->topLeftPoint = sf::Vector2f(vertices.at(0).x, vertices.at(0).y);
-
-    for (size_t i = 1; i < vertices.size(); i++) {
-        if (vertices.at(i).x < topLeftPoint.x || (vertices.at(i).x == topLeftPoint.x && vertices.at(i).y < topLeftPoint.y)) {
-            topLeftPoint = sf::Vector2f(vertices.at(i).x, vertices.at(i).y);
-        }
-    }
-
     this->vertices = vertices;
+
+    std::sort(this->vertices.begin(), this->vertices.end(), std::bind(&VectorMath::ConvexHullSolver::compare, this, std::placeholders::_1, std::placeholders::_2));
+
+    topLeftPoint = vertices[0];
+    bottomRightPoint = vertices[vertices.size() - 1];
 }
 
 VectorMath::ConvexHullSolver::~ConvexHullSolver() {};
 
 std::vector<sf::Vector2f> VectorMath::ConvexHullSolver::getConvexHull() {
-    std::stack<sf::Vector2f> stack;
-    std::sort(vertices.begin(), vertices.end(), std::bind(&VectorMath::ConvexHullSolver::compare, this, std::placeholders::_1, std::placeholders::_2));
-    return std::vector<sf::Vector2f>();
+    std::vector<sf::Vector2f> upperHull;
+    std::vector<sf::Vector2f> lowerHull;
+
+    upperHull.push_back(topLeftPoint);
+    lowerHull.push_back(topLeftPoint);
+
+    for (size_t i = 0; i < vertices.size(); i++) {
+        if (i == vertices.size() - 1 || getOrientation(topLeftPoint, vertices[i], bottomRightPoint) == DIRECTION_CLOCKWISE) {
+            while (upperHull.size() >= 2 && getOrientation(upperHull[upperHull.size() - 2], upperHull[upperHull.size() - 1], vertices[i]) != DIRECTION_CLOCKWISE) {
+                upperHull.pop_back();
+            }
+            upperHull.push_back(vertices[i]);
+        }
+        if (i == vertices.size() - 1 || getOrientation(topLeftPoint, vertices[i], bottomRightPoint) == DIRECTION_COUNTERCLOCKWISE) {
+            while (lowerHull.size() >= 2 && getOrientation(lowerHull[lowerHull.size() - 2], lowerHull[lowerHull.size() - 1], vertices[i]) != DIRECTION_COUNTERCLOCKWISE) {
+                lowerHull.pop_back();
+            }
+            lowerHull.push_back(vertices[i]);
+        }
+    }
+
+    vertices.clear();
+
+    for (size_t i = 0; i < upperHull.size(); i++) {
+        vertices.push_back(upperHull[i]);
+    }
+    for (size_t i = lowerHull.size() - 2; i > 0; i--) {
+        vertices.push_back(lowerHull[i]);
+    }
+
+    vertices.push_back(upperHull[0]);
+    return vertices;
 }
 
-int VectorMath::ConvexHullSolver::getOrientation(const sf::Vector2f& p1, const sf::Vector2f& p2) {
-    sf::Vector2f transformedV1 = p1 - topLeftPoint;
-    sf::Vector2f transformedV2 = p2 - topLeftPoint;
+int VectorMath::ConvexHullSolver::getOrientation(const sf::Vector2f& origin, const sf::Vector2f& p1, const sf::Vector2f& p2) {
+    sf::Vector2f transformedV1 = p1 - origin;
+    sf::Vector2f transformedV2 = p2 - origin;
 
     float crossProduct = VectorMath::crossProduct(transformedV2, transformedV1);
     if (crossProduct > 0) return DIRECTION_CLOCKWISE;
     else if (crossProduct < 0) return DIRECTION_COUNTERCLOCKWISE;
     return DIRECTION_COLINEAR;
-    return 0;
 }
 
 bool VectorMath::ConvexHullSolver::compare(const sf::Vector2f &v1, const sf::Vector2f &v2) {
-    int orientation = VectorMath::ConvexHullSolver::getOrientation(v1, v2);
-
-    if (orientation == DIRECTION_COUNTERCLOCKWISE) return true;
-    else if (orientation == DIRECTION_CLOCKWISE) return false;
-    else {
-        float d1 = distanceSquared(topLeftPoint, v1);
-        float d2 = distanceSquared(topLeftPoint, v2);
-        if (d2 >= d1) return true;
-        else return false;
-    }
+    return v1.x < v2.x || (v1.x == v2.x && v1.y < v2.y);
 }
 

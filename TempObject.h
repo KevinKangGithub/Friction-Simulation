@@ -23,7 +23,6 @@ public:
     sf::VertexArray getTempLine() const;
 
 private:
-
     sf::Vector2i initialPos;
     sf::VertexArray vertexArray;
     sf::VertexArray tempLine;

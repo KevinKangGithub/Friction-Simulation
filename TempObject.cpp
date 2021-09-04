@@ -1,5 +1,7 @@
 #include "TempObject.h"
 #include <SFML/Graphics.hpp>
+#include <stack>
+#include "VectorMath.h"
 
 TempObject::TempObject() {
     vertexArray.setPrimitiveType(sf::LineStrip);
@@ -7,16 +9,17 @@ TempObject::TempObject() {
     tempLine.setPrimitiveType(sf::Lines);
 }
 
-TempObject::~TempObject() {}
+TempObject::~TempObject() {};
 
 Object TempObject::toObject() {
     std::vector<sf::Vector2f> points;
 
-    for (size_t i = 0; i < vertexArray.getVertexCount(); i++) {
+    for (size_t i = 0; i < vertexArray.getVertexCount() - 1; i++) { //don't include the last duplicate point for convex hull algorithm
         points.push_back(sf::Vector2f(vertexArray[i].position.x - initialPos.x, vertexArray[i].position.y - initialPos.y));
     }
  
-    return Object(points, sf::Vector2f((float) initialPos.x, (float) initialPos.y));
+    VectorMath::ConvexHullSolver convexHullSolver(points);
+    return Object(convexHullSolver.getConvexHull(), sf::Vector2f((float) initialPos.x, (float) initialPos.y));
 }
 
 void TempObject::addPoint(sf::Vector2i point) {

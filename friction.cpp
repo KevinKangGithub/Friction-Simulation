@@ -3,6 +3,7 @@
 #include "World.h"
 #include "Renderer.h"
 #include <vector>
+#include <iostream>
 /*
     TODO:
     - add surface class
@@ -22,8 +23,9 @@ int main()
     TempObject test = TempObject();
     test.setInitialPos(sf::Vector2i(400, 200));
     test.addPoint(sf::Vector2i(400, 200));
-    test.addPoint(sf::Vector2i(375, 375));
-    test.addPoint(sf::Vector2i(1000, 900));
+    test.addPoint(sf::Vector2i(400, 400));
+    test.addPoint(sf::Vector2i(600, 400));
+    test.addPoint(sf::Vector2i(600, 300));
     test.addPoint(sf::Vector2i(400, 200));
     world.addObject(test.toObject());
     world.tempObject = &tempObject;
@@ -32,6 +34,9 @@ int main()
 
     float deltatime = 0.f;
     bool addingNewVertex = false;
+
+    sf::Vector2f test1(1.f, 0.f);
+    sf::Vector2f test2(1.f, 1.f);
 
     while (window.isOpen()) 
     {
@@ -92,8 +97,6 @@ int main()
 
         if (addingNewVertex) {
             window.draw(tempObject.getTempLine());
-
-
         }
 
         renderer.render(window); //draw the updated objects
