@@ -22,6 +22,44 @@ float VectorMath::distanceSquared(const sf::Vector2f& v1, const sf::Vector2f& v2
     return (v1.x - v2.x) * (v1.x - v2.x) + (v1.y - v2.y) * (v1.y - v2.y);
 }
 
+sf::Vector2f VectorMath::calcCentroid(sf::ConvexShape& shape) {
+    // https://en.wikipedia.org/wiki/Centroid#Of_a_polygon
+    // point MUST be organized in counter-clockwise order for this to work
+
+    float A = 1.f / (6.f * calcArea(shape));
+    float Cx = 0.f;
+    float Cy = 0.f;
+    float xi, xi1, yi, yi1;
+
+    for (size_t i = 0; i < shape.getPointCount() - 1; i++) {
+        xi = shape.getPoint(i).x;
+        xi1 = shape.getPoint(i + 1).x;
+        yi = shape.getPoint(i).y;
+        yi1 = shape.getPoint(i + 1).y;
+
+        Cx += (xi + xi1) * (xi * yi1 - xi1 * yi);
+        Cy += (yi + yi1) * (xi * yi1 - xi1 * yi);
+    }
+
+    return sf::Vector2f(Cx * A, Cy * A);
+    return sf::Vector2f();
+}
+
+float VectorMath::calcArea(sf::ConvexShape& shape) {
+    // https://en.wikipedia.org/wiki/Shoelace_formula
+    // point must be organized in counter-clockwise order to get a positive result
+
+    float totalMass = 0.f;
+    size_t pointCount = shape.getPointCount();
+
+    for (size_t i = 0; i < pointCount - 1; i++) {
+        totalMass += shape.getPoint(i).x * shape.getPoint(i + 1).y;
+        totalMass -= shape.getPoint(i + 1).x * shape.getPoint(i).y;
+    }
+    
+    return (totalMass / 2);
+}
+
 
 VectorMath::ConvexHullSolver::ConvexHullSolver(std::vector<sf::Vector2i> vertices) {
     this->vertices = vertices;

@@ -7,6 +7,10 @@ namespace VectorMath {
     float crossProduct(const sf::Vector2i& v1, const sf::Vector2i& v2);
     float dotProduct(const sf::Vector2f& v1, const sf::Vector2f& v2);
     float distanceSquared(const sf::Vector2f& v1, const sf::Vector2f& v2);
+
+    sf::Vector2f calcCentroid(sf::ConvexShape& shape);
+    float calcArea(sf::ConvexShape& shape);
+
     sf::Vector2f intToFloatVector(const sf::Vector2i& v);
     
     class ConvexHullSolver {

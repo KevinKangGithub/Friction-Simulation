@@ -21,19 +21,16 @@ int main()
     world.setTempObject(&tempObject);
     sf::Clock clock;
     sf::Vector2i mousePos;
+    sf::Event event;
 
     float deltatime = 0.f;
 
-    while (window.isOpen()) 
-    {
-        sf::Event event;
-        
+    while (window.isOpen()) {
         deltatime = clock.restart().asSeconds(); //clock.restart() also returns the elapsed time
         mousePos = sf::Mouse::getPosition(window);
         tempObject.setTempLinePos2(mousePos);
         
-        while (window.pollEvent(event))
-        {
+        while (window.pollEvent(event)) {
             switch (event.type) {
 
             case sf::Event::Closed:
@@ -41,9 +38,7 @@ int main()
                 return EXIT_SUCCESS;
 
             case sf::Event::MouseButtonReleased:
-                if (event.mouseButton.button == sf::Mouse::Left)
-                {
-
+                if (event.mouseButton.button == sf::Mouse::Left) {
                     tempObject.addPoint(mousePos);
                     if (tempObject.getVertexCount() > 2 && tempObject.getInitialPos().x == mousePos.x && tempObject.getInitialPos().y == mousePos.y) {
                         //TODO method to determine if the mouse is "close enough" to the first vertex position
@@ -64,11 +59,7 @@ int main()
                 break;
 
             case sf::Event::KeyPressed:
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-                    if (tempObject.getVertexCount() > 0) {
-                        tempObject = TempObject();
-                    }
-                }
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) && tempObject.getVertexCount() == 0) tempObject = TempObject();
                 break;
             }
         }
