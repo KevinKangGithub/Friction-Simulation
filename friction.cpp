@@ -51,15 +51,23 @@ int main()
                 break;
 
             case sf::Event::MouseButtonPressed:
-                if (tempObject.getInitialPos().x + tempObject.getInitialPos().y == 0) {
-                    tempObject.addPoint(mousePos);
-                    tempObject.setInitialPos(mousePos);
+                if (event.mouseButton.button == sf::Mouse::Left) {
+                    world.setIsAddingNewVertex(true);
+                    if (!tempObject.getHasPoints()) {
+                        tempObject.addPoint(mousePos);
+                        tempObject.setInitialPos(mousePos);
+                    }
                 }
-                if (event.mouseButton.button == sf::Mouse::Left) world.setIsAddingNewVertex(true);
                 break;
 
             case sf::Event::KeyPressed:
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) && tempObject.getVertexCount() == 0) tempObject = TempObject();
+                if (event.key.code == sf::Keyboard::Escape && tempObject.getVertexCount() == 0) tempObject = TempObject();
+                break;
+
+
+            case sf::Event::Resized:
+                sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
+                window.setView(sf::View(visibleArea));
                 break;
             }
         }

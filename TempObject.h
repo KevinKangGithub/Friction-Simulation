@@ -19,6 +19,7 @@ public:
     void setTempLinePos1(sf::Vector2i);
     void setTempLinePos2(sf::Vector2i);
 
+    bool getHasPoints() const;
     sf::Vector2i getInitialPos() const;
     size_t getVertexCount() const;
 
@@ -27,6 +28,7 @@ private:
     sf::Vector2i initialPos;
     sf::VertexArray vertexArray;
     sf::VertexArray tempLine;
+    bool hasPoints;
 
 };
 

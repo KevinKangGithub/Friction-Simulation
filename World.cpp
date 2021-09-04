@@ -72,9 +72,6 @@ void World::render(sf::RenderWindow& window) {
     }
 
     TempObject t = *tempObject;
-    t.drawVertexArray(window);
-
-    if (isAddingNewVertex) {
-        t.drawTempLine(window);
-    }
+    if (t.getHasPoints()) t.drawVertexArray(window);
+    if (isAddingNewVertex) t.drawTempLine(window);
 }

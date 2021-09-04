@@ -7,6 +7,7 @@ TempObject::TempObject() {
     vertexArray.setPrimitiveType(sf::LineStrip);
     tempLine.resize(2);
     tempLine.setPrimitiveType(sf::Lines);
+    hasPoints = false;
 }
 
 TempObject::~TempObject() {};
@@ -26,6 +27,7 @@ Object TempObject::toObject() {
 }
 
 void TempObject::addPoint(sf::Vector2i point) {
+    if (!hasPoints) hasPoints = true;
     sf::Vertex newVertex = sf::Vertex(sf::Vector2f((float) point.x, (float) point.y), sf::Color::White);
     vertexArray.append(newVertex);
     tempLine[0] = newVertex;
@@ -49,6 +51,10 @@ void TempObject::setTempLinePos1(sf::Vector2i v) {
 
 void TempObject::setTempLinePos2(sf::Vector2i v) {
     tempLine[1] = sf::Vertex(sf::Vector2f((float) v.x, (float) v.y), sf::Color::White);
+}
+
+bool TempObject::getHasPoints() const {
+    return hasPoints;
 }
 
 sf::Vector2i TempObject::getInitialPos() const {
