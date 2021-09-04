@@ -12,14 +12,17 @@ TempObject::TempObject() {
 TempObject::~TempObject() {};
 
 Object TempObject::toObject() {
-    std::vector<sf::Vector2f> points;
+    std::vector<sf::Vector2i> points;
 
     for (size_t i = 0; i < vertexArray.getVertexCount() - 1; i++) { //don't include the last duplicate point for convex hull algorithm
-        points.push_back(sf::Vector2f(vertexArray[i].position.x - initialPos.x, vertexArray[i].position.y - initialPos.y));
+        points.push_back(sf::Vector2i(
+            static_cast<int>(vertexArray[i].position.x - initialPos.x), //these should be integers anyway since it comes from mouse posisions
+            static_cast<int>(vertexArray[i].position.y - initialPos.y))
+        );
     }
  
     VectorMath::ConvexHullSolver convexHullSolver(points);
-    return Object(convexHullSolver.getConvexHull(), sf::Vector2f((float) initialPos.x, (float) initialPos.y));
+    return Object(convexHullSolver.getConvexHull(), VectorMath::intToFloatVector(initialPos));
 }
 
 void TempObject::addPoint(sf::Vector2i point) {
@@ -30,6 +33,10 @@ void TempObject::addPoint(sf::Vector2i point) {
 
 void TempObject::drawVertexArray(sf::RenderWindow &w) {
     w.draw(vertexArray);
+}
+
+void TempObject::drawTempLine(sf::RenderWindow& w) {
+    w.draw(tempLine);
 }
 
 void TempObject::setInitialPos(sf::Vector2i v) {
@@ -52,6 +59,3 @@ size_t TempObject::getVertexCount() const {
     return vertexArray.getVertexCount();
 }
 
-sf::VertexArray TempObject::getTempLine() const {
-    return tempLine;
-}

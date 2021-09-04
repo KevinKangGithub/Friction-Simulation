@@ -1,34 +1,42 @@
 #include "VectorMath.h"
 #include <stack>
 #include <algorithm>
-#include <functional>
 
 float VectorMath::crossProduct(const sf::Vector2f& v1, const sf::Vector2f& v2) {
     return (v1.x * v2.y) - (v1.y * v2.x); //returns the z-coordinate of the cross product https://www.mathsisfun.com/algebra/vectors-cross-product.html
+}
+
+float VectorMath::crossProduct(const sf::Vector2i& v1, const sf::Vector2i& v2) {
+    return static_cast<float>((v1.x * v2.y) - (v1.y * v2.x));
 }
 
 float VectorMath::dotProduct(const sf::Vector2f& v1, const sf::Vector2f& v2) {
     return (v1.x * v1.y) + (v1.y * v2.y);
 }
 
+sf::Vector2f VectorMath::intToFloatVector(const sf::Vector2i& v) {
+    return sf::Vector2f(static_cast<float>(v.x), static_cast<float>(v.y));
+}
+
 float VectorMath::distanceSquared(const sf::Vector2f& v1, const sf::Vector2f& v2) {
     return (v1.x - v2.x) * (v1.x - v2.x) + (v1.y - v2.y) * (v1.y - v2.y);
 }
 
-VectorMath::ConvexHullSolver::ConvexHullSolver(std::vector<sf::Vector2f> vertices) {
+
+VectorMath::ConvexHullSolver::ConvexHullSolver(std::vector<sf::Vector2i> vertices) {
     this->vertices = vertices;
 
-    std::sort(this->vertices.begin(), this->vertices.end(), std::bind(&VectorMath::ConvexHullSolver::compare, this, std::placeholders::_1, std::placeholders::_2));
+    std::sort(this->vertices.begin(), this->vertices.end(), &VectorMath::ConvexHullSolver::compare);
 
-    topLeftPoint = vertices[0];
-    bottomRightPoint = vertices[vertices.size() - 1];
+    topLeftPoint = this->vertices[0];
+    bottomRightPoint = this->vertices[this->vertices.size() - 1];
 }
 
 VectorMath::ConvexHullSolver::~ConvexHullSolver() {};
 
 std::vector<sf::Vector2f> VectorMath::ConvexHullSolver::getConvexHull() {
-    std::vector<sf::Vector2f> upperHull;
-    std::vector<sf::Vector2f> lowerHull;
+    std::vector<sf::Vector2i> upperHull;
+    std::vector<sf::Vector2i> lowerHull;
 
     upperHull.push_back(topLeftPoint);
     lowerHull.push_back(topLeftPoint);
@@ -48,22 +56,22 @@ std::vector<sf::Vector2f> VectorMath::ConvexHullSolver::getConvexHull() {
         }
     }
 
-    vertices.clear();
+    std::vector<sf::Vector2f> returned;
 
     for (size_t i = 0; i < upperHull.size(); i++) {
-        vertices.push_back(upperHull[i]);
+        returned.push_back(intToFloatVector(upperHull[i]));
     }
     for (size_t i = lowerHull.size() - 2; i > 0; i--) {
-        vertices.push_back(lowerHull[i]);
+        returned.push_back((sf::Vector2f) lowerHull[i]);
     }
 
-    vertices.push_back(upperHull[0]);
-    return vertices;
+    returned.push_back(intToFloatVector(upperHull[0]));
+    return returned;
 }
 
-int VectorMath::ConvexHullSolver::getOrientation(const sf::Vector2f& origin, const sf::Vector2f& p1, const sf::Vector2f& p2) {
-    sf::Vector2f transformedV1 = p1 - origin;
-    sf::Vector2f transformedV2 = p2 - origin;
+int VectorMath::ConvexHullSolver::getOrientation(const sf::Vector2i& origin, const sf::Vector2i& p1, const sf::Vector2i& p2) {
+    sf::Vector2i transformedV1 = p1 - origin;
+    sf::Vector2i transformedV2 = p2 - origin;
 
     float crossProduct = VectorMath::crossProduct(transformedV2, transformedV1);
     if (crossProduct > 0) return DIRECTION_CLOCKWISE;
@@ -71,7 +79,6 @@ int VectorMath::ConvexHullSolver::getOrientation(const sf::Vector2f& origin, con
     return DIRECTION_COLINEAR;
 }
 
-bool VectorMath::ConvexHullSolver::compare(const sf::Vector2f &v1, const sf::Vector2f &v2) {
+bool VectorMath::ConvexHullSolver::compare(const sf::Vector2i& v1, const sf::Vector2i& v2) {
     return v1.x < v2.x || (v1.x == v2.x && v1.y < v2.y);
 }
-

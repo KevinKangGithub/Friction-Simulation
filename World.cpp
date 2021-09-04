@@ -3,12 +3,10 @@
 
 World::World() {
     tempObject = nullptr;
+    isAddingNewVertex = false;
 };
-World::~World() {};
 
-std::vector<Object> World::getObjects() const {
-    return objects;
-}
+World::~World() {};
 
 void World::handleWallCollision(Object& o) {
     //seperating axis theorem http://programmerart.weebly.com/separating-axis-theorem.html
@@ -58,4 +56,25 @@ void World::updateObjects(float deltatime) {
 
 void World::addObject(Object o) {
     objects.push_back(o);
+}
+
+void World::setIsAddingNewVertex(bool b) {
+    isAddingNewVertex = b;
+}
+
+void World::setTempObject(TempObject* t) {
+    tempObject = t;
+}
+
+void World::render(sf::RenderWindow& window) {
+    for (const Object &obj : objects) {
+        window.draw(obj);
+    }
+
+    TempObject t = *tempObject;
+    t.drawVertexArray(window);
+
+    if (isAddingNewVertex) {
+        t.drawTempLine(window);
+    }
 }

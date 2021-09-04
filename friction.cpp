@@ -1,9 +1,8 @@
 #include <SFML/Graphics.hpp>
-#include "Constants.h"
-#include "World.h"
-#include "Renderer.h"
 #include <vector>
 #include <iostream>
+#include "Constants.h"
+#include "World.h"
 /*
     TODO:
     - add surface class
@@ -18,25 +17,12 @@ int main()
 {
     sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Friction Simulation");
     World world;
-    Renderer renderer(world);
     TempObject tempObject;
-    TempObject test = TempObject();
-    test.setInitialPos(sf::Vector2i(400, 200));
-    test.addPoint(sf::Vector2i(400, 200));
-    test.addPoint(sf::Vector2i(400, 400));
-    test.addPoint(sf::Vector2i(600, 400));
-    test.addPoint(sf::Vector2i(600, 300));
-    test.addPoint(sf::Vector2i(400, 200));
-    world.addObject(test.toObject());
-    world.tempObject = &tempObject;
+    world.setTempObject(&tempObject);
     sf::Clock clock;
     sf::Vector2i mousePos;
 
     float deltatime = 0.f;
-    bool addingNewVertex = false;
-
-    sf::Vector2f test1(1.f, 0.f);
-    sf::Vector2f test2(1.f, 1.f);
 
     while (window.isOpen()) 
     {
@@ -61,15 +47,12 @@ int main()
                     tempObject.addPoint(mousePos);
                     if (tempObject.getVertexCount() > 2 && tempObject.getInitialPos().x == mousePos.x && tempObject.getInitialPos().y == mousePos.y) {
                         //TODO method to determine if the mouse is "close enough" to the first vertex position
-                        //TODO method to sort points in clockwise or counterclockwise order for the centroid and mass methods 
-                        //     to work correctly or make it so that you can't draw points
-                        //     
                         world.addObject(tempObject.toObject());
                         tempObject = TempObject();
                     }
                 }
 
-                addingNewVertex = false;
+                world.setIsAddingNewVertex(false);
                 break;
 
             case sf::Event::MouseButtonPressed:
@@ -77,15 +60,13 @@ int main()
                     tempObject.addPoint(mousePos);
                     tempObject.setInitialPos(mousePos);
                 }
-                if (event.mouseButton.button == sf::Mouse::Left) addingNewVertex = true;
+                if (event.mouseButton.button == sf::Mouse::Left) world.setIsAddingNewVertex(true);
                 break;
-
 
             case sf::Event::KeyPressed:
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
                     if (tempObject.getVertexCount() > 0) {
                         tempObject = TempObject();
-                        world.tempObject = &tempObject;
                     }
                 }
                 break;
@@ -93,13 +74,9 @@ int main()
         }
 
         world.updateObjects(deltatime); //update object positions, but do not render the changes
+
         window.clear();
-
-        if (addingNewVertex) {
-            window.draw(tempObject.getTempLine());
-        }
-
-        renderer.render(window); //draw the updated objects
+        world.render(window); //draw the updated objects
         window.display();
     }
 
