@@ -22,6 +22,14 @@ float VectorMath::distanceSquared(const sf::Vector2f& v1, const sf::Vector2f& v2
     return (v1.x - v2.x) * (v1.x - v2.x) + (v1.y - v2.y) * (v1.y - v2.y);
 }
 
+int VectorMath::distanceSquared(const sf::Vector2i& v1, const sf::Vector2i& v2) {
+    return (v1.x - v2.x) * (v1.x - v2.x) + (v1.y - v2.y) * (v1.y - v2.y);
+}
+
+bool VectorMath::isCloseEnough(const sf::Vector2i& pointPos, const sf::Vector2i& mousePos) {
+    return distanceSquared(pointPos, mousePos) < CLOSE_ENOUGH_RADIUS_SQUARED;
+}
+
 sf::Vector2f VectorMath::calcCentroid(sf::ConvexShape& shape) {
     // https://en.wikipedia.org/wiki/Centroid#Of_a_polygon
     // point MUST be organized in counter-clockwise order for this to work

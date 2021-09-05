@@ -3,6 +3,8 @@
 #include <iostream>
 #include "Constants.h"
 #include "World.h"
+#include "VectorMath.h"
+
 /*
     TODO:
     - add surface class
@@ -40,8 +42,7 @@ int main()
             case sf::Event::MouseButtonReleased:
                 if (event.mouseButton.button == sf::Mouse::Left) {
                     tempObject.addPoint(mousePos);
-                    if (tempObject.getVertexCount() > 2 && tempObject.getInitialPos().x == mousePos.x && tempObject.getInitialPos().y == mousePos.y) {
-                        //TODO method to determine if the mouse is "close enough" to the first vertex position
+                    if (tempObject.getVertexCount() > 2 && VectorMath::isCloseEnough(tempObject.getInitialPos(), mousePos)) {
                         world.addObject(tempObject.toObject());
                         tempObject = TempObject();
                     }
