@@ -23,7 +23,7 @@ Object TempObject::toObject() {
     }
  
     VectorMath::ConvexHullSolver convexHullSolver(points);
-    return Object(convexHullSolver.getConvexHull(), VectorMath::intToFloatVector(initialPos));
+    return Object(convexHullSolver.getConvexHull(), VectorMath::intToFloatVector(initialPos), 0.1f);
 }
 
 void TempObject::addPoint(sf::Vector2i point) {

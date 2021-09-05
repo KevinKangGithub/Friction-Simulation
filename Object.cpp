@@ -12,10 +12,11 @@ Object::Object(std::vector<sf::Vector2f> points, sf::Vector2f pos, float rv) {
 
     mass = VectorMath::calcArea(*this);
     sf::Vector2f localCenterOfMass = VectorMath::calcCentroid(*this);
-    setPosition(pos);
-    setOrigin(localCenterOfMass.x, localCenterOfMass.y);
+    setOrigin(localCenterOfMass);
+    setPosition(pos + localCenterOfMass);
     setRotationalVelocity(rv);
 };
+
 Object::~Object() {};
 
 void Object::updatePos(float deltatime) {

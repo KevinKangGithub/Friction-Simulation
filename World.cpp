@@ -6,7 +6,9 @@ World::World() {
     isAddingNewVertex = false;
 };
 
-World::~World() {};
+World::~World() {
+    delete tempObject;
+};
 
 void World::handleWallCollision(Object& o) {
     //seperating axis theorem http://programmerart.weebly.com/separating-axis-theorem.html

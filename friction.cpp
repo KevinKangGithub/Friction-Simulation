@@ -1,6 +1,5 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
-#include <iostream>
 #include "Constants.h"
 #include "World.h"
 #include "VectorMath.h"
@@ -65,9 +64,8 @@ int main()
                 if (event.key.code == sf::Keyboard::Escape && tempObject.getVertexCount() == 0) tempObject = TempObject();
                 break;
 
-
             case sf::Event::Resized:
-                sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
+                sf::FloatRect visibleArea(0, 0, static_cast<float>(event.size.width), static_cast<float>(event.size.height));
                 window.setView(sf::View(visibleArea));
                 break;
             }
