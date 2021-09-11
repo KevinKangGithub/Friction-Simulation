@@ -38,6 +38,10 @@ void Object::setRotationalVelocity(float rv) {
     rotationalVelocity = rv;
 }
 
+sf::Vector2f Object::getGlobalTransformedPoint(size_t i) const {
+    return getTransform().transformPoint(getPoint(i));
+}
+
 sf::Vector2f Object::getVelocity() const {
     return velocity;
 }
@@ -50,7 +54,7 @@ float Object::getMass() const {
     return mass;
 }
 
-bool Object::detectObjectCollision(const sf::ConvexShape& o) {
+bool Object::detectObjectCollision(const Object& o) {
     std::vector<sf::Vector2f> o1axes = VectorMath::calcNormals(*this);
     std::vector<sf::Vector2f> o2axes = VectorMath::calcNormals(o);
 

@@ -1,5 +1,6 @@
 #include "Wall.h"
 #include "VectorMath.h"
+#include "Object.h"
 
 Wall::Wall() {};
 
@@ -12,7 +13,7 @@ Wall::Wall(sf::FloatRect rect) {
 
 Wall::~Wall() {};
 
-bool Wall::detectObjectCollision(const sf::ConvexShape& o) {
+bool Wall::detectObjectCollision(const Object& o) {
     std::vector<sf::Vector2f> normals = VectorMath::calcNormals(o);
 
     for (size_t i = 0; i < o.getPointCount() - 1; i++) {

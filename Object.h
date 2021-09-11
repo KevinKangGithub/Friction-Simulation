@@ -14,11 +14,12 @@ public:
     void setVelocity(sf::Vector2f v);
     void setRotationalVelocity(float v);
     
+    sf::Vector2f getGlobalTransformedPoint(size_t i) const;
     sf::Vector2f getVelocity() const;
     float getRotationalVelocity() const;
     float getMass() const;
 
-    bool detectObjectCollision(const sf::ConvexShape& o) override;
+    bool detectObjectCollision(const Object& o) override;
     
 private: 
     

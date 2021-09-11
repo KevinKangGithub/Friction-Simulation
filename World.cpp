@@ -3,6 +3,7 @@
 #include "Wall.h"
 #include <array>
 #include <iostream>
+#include "VectorMath.h"
 
 World::World() {
     tempObject = nullptr;
@@ -25,7 +26,6 @@ void World::handleCollisions() {
 
         for (size_t j = 0; j < walls.size(); j++) {
             if (walls[i].detectObjectCollision(obj)) {
-                std::cout << "wal collision \n";
             }
         }
 

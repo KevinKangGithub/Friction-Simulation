@@ -1,7 +1,8 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
-#include <limits>
 #include "Projection.h"
+
+class Object;
 
 namespace VectorMath {
     const int CLOSE_ENOUGH_RADIUS_SQUARED = 36;
@@ -10,11 +11,12 @@ namespace VectorMath {
     float dotProduct(const sf::Vector2f& v1, const sf::Vector2f& v2);
     float distanceSquared(const sf::Vector2f& v1, const sf::Vector2f& v2);
     int distanceSquared(const sf::Vector2i& v1, const sf::Vector2i& v2);
+    sf::Vector2f normalizeVector(const sf::Vector2f & v);
 
     sf::Vector2f calcCentroid(sf::ConvexShape& shape);
     float calcArea(sf::ConvexShape& shape);
-    std::vector<sf::Vector2f> calcNormals(const sf::ConvexShape& o);
-    Projection projectVector(const sf::Vector2f & axis, const sf::ConvexShape & o);
+    std::vector<sf::Vector2f> calcNormals(const Object& o);
+    Projection projectVector(const sf::Vector2f & axis, const Object& o);
 
     sf::Vector2f intToFloatVector(const sf::Vector2i& v);
     

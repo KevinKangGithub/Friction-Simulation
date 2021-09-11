@@ -1,4 +1,5 @@
 #include "VectorMath.h"
+#include "Object.h"
 #include <stack>
 #include <algorithm>
 
@@ -11,7 +12,7 @@ float VectorMath::crossProduct(const sf::Vector2i& v1, const sf::Vector2i& v2) {
 }
 
 float VectorMath::dotProduct(const sf::Vector2f& v1, const sf::Vector2f& v2) {
-    return (v1.x * v1.y) + (v1.y * v2.y);
+    return (v1.x * v2.y) + (v1.y * v2.y);
 }
 
 sf::Vector2f VectorMath::intToFloatVector(const sf::Vector2i& v) {
@@ -24,6 +25,11 @@ float VectorMath::distanceSquared(const sf::Vector2f& v1, const sf::Vector2f& v2
 
 int VectorMath::distanceSquared(const sf::Vector2i& v1, const sf::Vector2i& v2) {
     return (v1.x - v2.x) * (v1.x - v2.x) + (v1.y - v2.y) * (v1.y - v2.y);
+}
+
+sf::Vector2f VectorMath::normalizeVector(const sf::Vector2f& v) {
+    float a = 1 / std::sqrt(v.x * v.x + v.y * v.y);
+    return sf::Vector2f(v.x * a, v.y * a);
 }
 
 bool VectorMath::isCloseEnough(const sf::Vector2i& pointPos, const sf::Vector2i& mousePos) {
@@ -68,32 +74,29 @@ float VectorMath::calcArea(sf::ConvexShape& shape) {
     return (totalMass / 2);
 }
 
-std::vector<sf::Vector2f> VectorMath::calcNormals(const sf::ConvexShape& o) { //method assumes that the last point is equal to the first point
+std::vector<sf::Vector2f> VectorMath::calcNormals(const Object& o) { //method assumes that the last point is equal to the first point
     std::vector<sf::Vector2f> ret;
     for (size_t i = 0; i < o.getPointCount() - 1; i++) {
-        sf::Vector2f edge = sf::Vector2f(
-            o.getTransform().transformPoint(o.getPoint(i + 1)) -
-            o.getTransform().transformPoint(o.getPoint(i))
-        ); //get the edge formed by next point and current point
+        sf::Vector2f edge = sf::Vector2f(o.getGlobalTransformedPoint(i) - o.getGlobalTransformedPoint(i + 1)); //get the edge formed by next point and current point
 
         //get the perpendicular of the edge relative to the center of the object, we can use this sane vector relative to global coordinates as an axis as its
         //direction will be unchanged when moving it to the origin
         sf::Vector2f normal(edge.y, -edge.x); 
         
-        ret.push_back(normal);
+        ret.push_back(VectorMath::normalizeVector(normal)); //normalize the vector to a unit vector
     }
     return ret;
 }
 
-Projection VectorMath::projectVector(const sf::Vector2f& axis, const sf::ConvexShape& o) {
-    float min = VectorMath::dotProduct(axis, o.getTransform().transformPoint(o.getPoint(0)));
-    float max = min;
+Projection VectorMath::projectVector(const sf::Vector2f& axis, const Object& o) {
+    sf::Vector2f transformedPoint = o.getGlobalTransformedPoint(0);
+    Projection p = { VectorMath::dotProduct(axis, transformedPoint), VectorMath::dotProduct(axis, transformedPoint) };
     for (size_t i = 0; i < o.getPointCount(); i++) {
-         float projection = VectorMath::dotProduct(axis, o.getTransform().transformPoint(o.getPoint(i)));
-         if (projection < min) min = projection;
-         else if (projection > max) max = projection;
+        sf::Vector2f transformedPoint = o.getGlobalTransformedPoint(i);
+         float projection = VectorMath::dotProduct(axis, transformedPoint);
+         if (projection < p.min) p.min = projection;
+         else if (projection > p.max) p.max = projection;
     }
-    Projection p = {min, max};
     return p;
 }
 

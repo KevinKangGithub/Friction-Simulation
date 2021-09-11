@@ -18,7 +18,14 @@ int main()
     sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Friction Simulation");
     World world;
     TempObject tempObject;
+    tempObject.addPoint(sf::Vector2i(20, 20));
+    tempObject.addPoint(sf::Vector2i(20, 40));
+    tempObject.addPoint(sf::Vector2i(40, 40));
+    tempObject.addPoint(sf::Vector2i(40, 20));
+    tempObject.addPoint(sf::Vector2i(20, 20));
     world.setTempObject(&tempObject);
+    world.addObject(tempObject.toObject());
+    tempObject = TempObject();
     sf::Clock clock;
     sf::Vector2i mousePos;
     sf::Event event;

@@ -3,6 +3,8 @@
 #include <SFML/Graphics.hpp>
 #include "Collideable.h"
 
+class Object;
+
 class Wall : public Collideable {
 public:
 
@@ -10,7 +12,7 @@ public:
     Wall(sf::FloatRect rect);
     ~Wall();
 
-    bool detectObjectCollision(const sf::ConvexShape& o) override;
+    bool detectObjectCollision(const Object& o) override;
 
 private:
     std::vector<sf::Vector2f> corners;
