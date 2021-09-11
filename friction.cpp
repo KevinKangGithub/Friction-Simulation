@@ -9,7 +9,6 @@
     - add surface class
       - add ability to draw a "surface" with right mouse button which objects can collide with
     - 
-    - rotation of objects
     - fix object collisions with the window
     - add object collision with each other
 */
@@ -61,7 +60,7 @@ int main()
                 break;
 
             case sf::Event::KeyPressed:
-                if (event.key.code == sf::Keyboard::Escape && tempObject.getVertexCount() == 0) tempObject = TempObject();
+                if (event.key.code == sf::Keyboard::Escape && tempObject.getVertexCount() > 0) tempObject = TempObject();
                 break;
 
             case sf::Event::Resized:

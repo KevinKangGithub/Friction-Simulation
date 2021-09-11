@@ -2,6 +2,7 @@
 #include "Object.h"
 #include "VectorMath.h"
 #include "Constants.h"
+#include "Projection.h"
 
 Object::Object(std::vector<sf::Vector2f> points, sf::Vector2f pos, float rv) {
     setPointCount(points.size());
@@ -47,4 +48,20 @@ float Object::getRotationalVelocity() const {
 
 float Object::getMass() const {
     return mass;
+}
+
+bool Object::detectObjectCollision(const sf::ConvexShape& o) {
+    std::vector<sf::Vector2f> o1axes = VectorMath::calcNormals(*this);
+    std::vector<sf::Vector2f> o2axes = VectorMath::calcNormals(o);
+
+    for (size_t i = 0; i < o1axes.size(); i++) {
+        sf::Vector2f axis = o1axes[i];
+
+        Projection thisProjection = VectorMath::projectVector(axis, *this);
+        Projection objectProjection = VectorMath::projectVector(axis, o);
+
+        if (!(objectProjection.max < thisProjection.min || thisProjection.max < objectProjection.min)) return false;
+
+    }
+    return true;
 }

@@ -68,6 +68,34 @@ float VectorMath::calcArea(sf::ConvexShape& shape) {
     return (totalMass / 2);
 }
 
+std::vector<sf::Vector2f> VectorMath::calcNormals(const sf::ConvexShape& o) { //method assumes that the last point is equal to the first point
+    std::vector<sf::Vector2f> ret;
+    for (size_t i = 0; i < o.getPointCount() - 1; i++) {
+        sf::Vector2f edge = sf::Vector2f(
+            o.getTransform().transformPoint(o.getPoint(i + 1)) -
+            o.getTransform().transformPoint(o.getPoint(i))
+        ); //get the edge formed by next point and current point
+
+        //get the perpendicular of the edge relative to the center of the object, we can use this sane vector relative to global coordinates as an axis as its
+        //direction will be unchanged when moving it to the origin
+        sf::Vector2f normal(edge.y, -edge.x); 
+        
+        ret.push_back(normal);
+    }
+    return ret;
+}
+
+Projection VectorMath::projectVector(const sf::Vector2f& axis, const sf::ConvexShape& o) {
+    float min = VectorMath::dotProduct(axis, o.getTransform().transformPoint(o.getPoint(0)));
+    float max = min;
+    for (size_t i = 0; i < o.getPointCount(); i++) {
+         float projection = VectorMath::dotProduct(axis, o.getTransform().transformPoint(o.getPoint(i)));
+         if (projection < min) min = projection;
+         else if (projection > max) max = projection;
+    }
+    Projection p = {min, max};
+    return p;
+}
 
 VectorMath::ConvexHullSolver::ConvexHullSolver(std::vector<sf::Vector2i> vertices) {
     this->vertices = vertices;
@@ -128,3 +156,4 @@ int VectorMath::ConvexHullSolver::getOrientation(const sf::Vector2i& origin, con
 bool VectorMath::ConvexHullSolver::compare(const sf::Vector2i& v1, const sf::Vector2i& v2) {
     return v1.x < v2.x || (v1.x == v2.x && v1.y < v2.y);
 }
+

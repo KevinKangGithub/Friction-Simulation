@@ -1,10 +1,9 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 #include <SFML/Graphics.hpp>
+#include "Collideable.h"
 
-class Object :
-    public sf::ConvexShape
-{
+class Object : public Collideable, public sf::ConvexShape {
 public:
 
     Object(std::vector<sf::Vector2f> points, sf::Vector2f pos, float rv = 0);
@@ -19,6 +18,8 @@ public:
     float getRotationalVelocity() const;
     float getMass() const;
 
+    bool detectObjectCollision(const sf::ConvexShape& o) override;
+    
 private: 
     
     sf::Vector2f velocity;
