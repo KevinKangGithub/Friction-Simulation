@@ -5,3 +5,5 @@ Debug
 *.vcxproj.*
 *.vcxproj
 *.sln
+/build
+CMakeLists.txt
