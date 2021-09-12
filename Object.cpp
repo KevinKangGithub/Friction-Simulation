@@ -58,14 +58,22 @@ bool Object::detectObjectCollision(const Object& o) {
     std::vector<sf::Vector2f> o1axes = VectorMath::calcNormals(*this);
     std::vector<sf::Vector2f> o2axes = VectorMath::calcNormals(o);
 
+    sf::Vector2f axis;
+    Projection thisProjection = { 0, 0 };
+    Projection objectProjection = { 0, 0 };
+
     for (size_t i = 0; i < o1axes.size(); i++) {
-        sf::Vector2f axis = o1axes[i];
+        axis = o1axes[i];
+        thisProjection = VectorMath::projectObject(axis, *this);
+        objectProjection = VectorMath::projectObject(axis, o);
+        if (!thisProjection.intersects(objectProjection)) return false;
+    }
 
-        Projection thisProjection = VectorMath::projectVector(axis, *this);
-        Projection objectProjection = VectorMath::projectVector(axis, o);
-
-        if (!(objectProjection.max < thisProjection.min || thisProjection.max < objectProjection.min)) return false;
-
+    for (size_t i = 0; i < o2axes.size(); i++) {
+        sf::Vector2f axis = o2axes[i];
+        thisProjection = VectorMath::projectObject(axis, *this);
+        objectProjection = VectorMath::projectObject(axis, o);
+        if (!thisProjection.intersects(objectProjection)) return false;
     }
     return true;
 }

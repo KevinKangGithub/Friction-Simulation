@@ -16,7 +16,9 @@ namespace VectorMath {
     sf::Vector2f calcCentroid(sf::ConvexShape& shape);
     float calcArea(sf::ConvexShape& shape);
     std::vector<sf::Vector2f> calcNormals(const Object& o);
-    Projection projectVector(const sf::Vector2f & axis, const Object& o);
+
+    float projectPoint(const sf::Vector2f& axis, const sf::Vector2f& point);
+    Projection projectObject(const sf::Vector2f & axis, const Object& o);
 
     sf::Vector2f intToFloatVector(const sf::Vector2i& v);
     

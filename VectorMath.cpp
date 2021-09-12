@@ -12,7 +12,7 @@ float VectorMath::crossProduct(const sf::Vector2i& v1, const sf::Vector2i& v2) {
 }
 
 float VectorMath::dotProduct(const sf::Vector2f& v1, const sf::Vector2f& v2) {
-    return (v1.x * v2.y) + (v1.y * v2.y);
+    return (v1.x * v2.x) + (v1.y * v2.y);
 }
 
 sf::Vector2f VectorMath::intToFloatVector(const sf::Vector2i& v) {
@@ -88,12 +88,16 @@ std::vector<sf::Vector2f> VectorMath::calcNormals(const Object& o) { //method as
     return ret;
 }
 
-Projection VectorMath::projectVector(const sf::Vector2f& axis, const Object& o) {
+float VectorMath::projectPoint(const sf::Vector2f& axis, const sf::Vector2f& point) {
+    return VectorMath::dotProduct(axis, point);
+};
+Projection VectorMath::projectObject(const sf::Vector2f& axis, const Object& o) {
     sf::Vector2f transformedPoint = o.getGlobalTransformedPoint(0);
-    Projection p = { VectorMath::dotProduct(axis, transformedPoint), VectorMath::dotProduct(axis, transformedPoint) };
-    for (size_t i = 0; i < o.getPointCount(); i++) {
+    Projection p = { VectorMath::projectPoint(axis, transformedPoint), VectorMath::projectPoint(axis, transformedPoint) };
+
+    for (size_t i = 1; i < o.getPointCount(); i++) {
         sf::Vector2f transformedPoint = o.getGlobalTransformedPoint(i);
-         float projection = VectorMath::dotProduct(axis, transformedPoint);
+         float projection = VectorMath::projectPoint(axis, transformedPoint);
          if (projection < p.min) p.min = projection;
          else if (projection > p.max) p.max = projection;
     }
