@@ -1,19 +1,13 @@
 #include "World.h"
 #include "Constants.h"
-#include "Wall.h"
+#include "Boundaries.h"
 #include <array>
-#include <iostream>
 #include "VectorMath.h"
 
 World::World() {
     tempObject = nullptr;
     isAddingNewVertex = false;
-    walls = {
-        Wall(sf::FloatRect(sf::Vector2f(0.f, 0.f), sf::Vector2f(1, WINDOW_HEIGHT))), //left wall
-        Wall(sf::FloatRect(sf::Vector2f(WINDOW_WIDTH, 0.f), sf::Vector2f(1, WINDOW_HEIGHT))), //right wall
-        Wall(sf::FloatRect(sf::Vector2f(0.f, 0.f), sf::Vector2f(WINDOW_WIDTH, 1))), //top wall
-        Wall(sf::FloatRect(sf::Vector2f(0.f, WINDOW_HEIGHT), sf::Vector2f(WINDOW_WIDTH, 1))), //bottom wall
-    };
+    bounds = Boundaries();
 };
 
 World::~World() {
@@ -24,9 +18,8 @@ void World::handleCollisions() {
     for (size_t i = 0; i < objects.size(); i++) {
         Object& obj = objects.at(i);
 
-        for (size_t j = 0; j < walls.size(); j++) {
-            if (walls[i].detectObjectCollision(obj)) {
-            }
+        if (bounds.detectObjectCollision(obj)) {
+            //handle collision
         }
 
         /* 
@@ -35,10 +28,10 @@ void World::handleCollisions() {
         * because object 1 already checks with object 2) 
         */
 
-        for (size_t j = i + i; j < objects.size() - i - 1; j++) {  
+        for (size_t j = i + 1; j < objects.size() - i; j++) {  
             Object& obj2 = objects.at(j);
             if (obj.detectObjectCollision(obj2)) {
-                std::cout << "obj colliison \n";
+                //handle collision
             }
         }
     }

@@ -5,17 +5,15 @@
 
 class Object;
 
-class Wall : public Collideable {
+class Boundaries : public Collideable {
 public:
 
-    Wall();
-    Wall(sf::FloatRect rect);
-    ~Wall();
+    Boundaries();
+    ~Boundaries();
 
     bool detectObjectCollision(const Object& o) override;
 
 private:
-    std::vector<sf::Vector2f> corners;
 };
 
 #endif

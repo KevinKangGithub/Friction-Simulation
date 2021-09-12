@@ -4,7 +4,7 @@
 #include <array>
 #include "Object.h"
 #include "TempObject.h"
-#include "Wall.h"
+#include "Boundaries.h"
 
 class World {
 
@@ -27,7 +27,7 @@ private:
     bool isAddingNewVertex;
     TempObject* tempObject;
     std::vector<Object> objects;
-    std::array<Wall, 4> walls{};
+    Boundaries bounds;
 
 }; 
 
