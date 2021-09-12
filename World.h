@@ -1,18 +1,19 @@
 #ifndef WORLD_H
 #define WORLD_H
 #include <vector>
+#include <array>
 #include "Object.h"
 #include "TempObject.h"
+#include "Boundaries.h"
 
 class World {
 
 public: 
+
     World();
     ~World();
 
     void updateObjects(float deltatime);
-    void handleWallCollision(Object& o);
-    void handleObjectCollision(Object& o1, Object& o2);
     void handleCollisions();
     void render(sf::RenderWindow& window);
 
@@ -26,6 +27,7 @@ private:
     bool isAddingNewVertex;
     TempObject* tempObject;
     std::vector<Object> objects;
+    Boundaries bounds;
 
 }; 
 

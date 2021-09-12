@@ -2,6 +2,7 @@
 #include "Object.h"
 #include "VectorMath.h"
 #include "Constants.h"
+#include "Projection.h"
 
 Object::Object(std::vector<sf::Vector2f> points, sf::Vector2f pos, float rv) {
     setPointCount(points.size());
@@ -37,6 +38,10 @@ void Object::setRotationalVelocity(float rv) {
     rotationalVelocity = rv;
 }
 
+sf::Vector2f Object::getGlobalTransformedPoint(size_t i) const {
+    return getTransform().transformPoint(getPoint(i));
+}
+
 sf::Vector2f Object::getVelocity() const {
     return velocity;
 }
@@ -47,4 +52,28 @@ float Object::getRotationalVelocity() const {
 
 float Object::getMass() const {
     return mass;
+}
+
+bool Object::detectObjectCollision(const Object& o) {
+    std::vector<sf::Vector2f> o1axes = VectorMath::calcNormals(*this);
+    std::vector<sf::Vector2f> o2axes = VectorMath::calcNormals(o);
+
+    sf::Vector2f axis;
+    Projection thisProjection = { 0, 0 };
+    Projection objectProjection = { 0, 0 };
+
+    for (size_t i = 0; i < o1axes.size(); i++) {
+        axis = o1axes[i];
+        thisProjection = VectorMath::projectObject(axis, *this);
+        objectProjection = VectorMath::projectObject(axis, o);
+        if (!thisProjection.intersects(objectProjection)) return false;
+    }
+
+    for (size_t i = 0; i < o2axes.size(); i++) {
+        sf::Vector2f axis = o2axes[i];
+        thisProjection = VectorMath::projectObject(axis, *this);
+        objectProjection = VectorMath::projectObject(axis, o);
+        if (!thisProjection.intersects(objectProjection)) return false;
+    }
+    return true;
 }

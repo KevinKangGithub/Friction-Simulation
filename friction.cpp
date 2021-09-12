@@ -9,7 +9,6 @@
     - add surface class
       - add ability to draw a "surface" with right mouse button which objects can collide with
     - 
-    - rotation of objects
     - fix object collisions with the window
     - add object collision with each other
 */
@@ -19,7 +18,14 @@ int main()
     sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Friction Simulation");
     World world;
     TempObject tempObject;
+    tempObject.addPoint(sf::Vector2i(20, 20));
+    tempObject.addPoint(sf::Vector2i(20, 40));
+    tempObject.addPoint(sf::Vector2i(40, 40));
+    tempObject.addPoint(sf::Vector2i(40, 20));
+    tempObject.addPoint(sf::Vector2i(20, 20));
     world.setTempObject(&tempObject);
+    world.addObject(tempObject.toObject());
+    tempObject = TempObject();
     sf::Clock clock;
     sf::Vector2i mousePos;
     sf::Event event;
@@ -61,7 +67,7 @@ int main()
                 break;
 
             case sf::Event::KeyPressed:
-                if (event.key.code == sf::Keyboard::Escape && tempObject.getVertexCount() == 0) tempObject = TempObject();
+                if (event.key.code == sf::Keyboard::Escape && tempObject.getVertexCount() > 0) tempObject = TempObject();
                 break;
 
             case sf::Event::Resized:

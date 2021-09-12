@@ -1,4 +1,5 @@
 #include "VectorMath.h"
+#include "Object.h"
 #include <stack>
 #include <algorithm>
 
@@ -11,7 +12,7 @@ float VectorMath::crossProduct(const sf::Vector2i& v1, const sf::Vector2i& v2) {
 }
 
 float VectorMath::dotProduct(const sf::Vector2f& v1, const sf::Vector2f& v2) {
-    return (v1.x * v1.y) + (v1.y * v2.y);
+    return (v1.x * v2.x) + (v1.y * v2.y);
 }
 
 sf::Vector2f VectorMath::intToFloatVector(const sf::Vector2i& v) {
@@ -24,6 +25,11 @@ float VectorMath::distanceSquared(const sf::Vector2f& v1, const sf::Vector2f& v2
 
 int VectorMath::distanceSquared(const sf::Vector2i& v1, const sf::Vector2i& v2) {
     return (v1.x - v2.x) * (v1.x - v2.x) + (v1.y - v2.y) * (v1.y - v2.y);
+}
+
+sf::Vector2f VectorMath::normalizeVector(const sf::Vector2f& v) {
+    float a = 1 / std::sqrt(v.x * v.x + v.y * v.y);
+    return sf::Vector2f(v.x * a, v.y * a);
 }
 
 bool VectorMath::isCloseEnough(const sf::Vector2i& pointPos, const sf::Vector2i& mousePos) {
@@ -68,6 +74,35 @@ float VectorMath::calcArea(sf::ConvexShape& shape) {
     return (totalMass / 2);
 }
 
+std::vector<sf::Vector2f> VectorMath::calcNormals(const Object& o) { //method assumes that the last point is equal to the first point
+    std::vector<sf::Vector2f> ret;
+    for (size_t i = 0; i < o.getPointCount() - 1; i++) {
+        sf::Vector2f edge = sf::Vector2f(o.getGlobalTransformedPoint(i) - o.getGlobalTransformedPoint(i + 1)); //get the edge formed by next point and current point
+
+        //get the perpendicular of the edge relative to the center of the object, we can use this sane vector relative to global coordinates as an axis as its
+        //direction will be unchanged when moving it to the origin
+        sf::Vector2f normal(edge.y, -edge.x); 
+        
+        ret.push_back(VectorMath::normalizeVector(normal)); //normalize the vector to a unit vector
+    }
+    return ret;
+}
+
+float VectorMath::projectPoint(const sf::Vector2f& axis, const sf::Vector2f& point) {
+    return VectorMath::dotProduct(axis, point);
+};
+Projection VectorMath::projectObject(const sf::Vector2f& axis, const Object& o) {
+    sf::Vector2f transformedPoint = o.getGlobalTransformedPoint(0);
+    Projection p = { VectorMath::projectPoint(axis, transformedPoint), VectorMath::projectPoint(axis, transformedPoint) };
+
+    for (size_t i = 1; i < o.getPointCount(); i++) {
+        sf::Vector2f transformedPoint = o.getGlobalTransformedPoint(i);
+         float projection = VectorMath::projectPoint(axis, transformedPoint);
+         if (projection < p.min) p.min = projection;
+         else if (projection > p.max) p.max = projection;
+    }
+    return p;
+}
 
 VectorMath::ConvexHullSolver::ConvexHullSolver(std::vector<sf::Vector2i> vertices) {
     this->vertices = vertices;
@@ -128,3 +163,4 @@ int VectorMath::ConvexHullSolver::getOrientation(const sf::Vector2i& origin, con
 bool VectorMath::ConvexHullSolver::compare(const sf::Vector2i& v1, const sf::Vector2i& v2) {
     return v1.x < v2.x || (v1.x == v2.x && v1.y < v2.y);
 }
+

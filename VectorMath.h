@@ -1,6 +1,8 @@
-#pragma once
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include "Projection.h"
+
+class Object;
 
 namespace VectorMath {
     const int CLOSE_ENOUGH_RADIUS_SQUARED = 36;
@@ -9,15 +11,21 @@ namespace VectorMath {
     float dotProduct(const sf::Vector2f& v1, const sf::Vector2f& v2);
     float distanceSquared(const sf::Vector2f& v1, const sf::Vector2f& v2);
     int distanceSquared(const sf::Vector2i& v1, const sf::Vector2i& v2);
+    sf::Vector2f normalizeVector(const sf::Vector2f & v);
 
     sf::Vector2f calcCentroid(sf::ConvexShape& shape);
     float calcArea(sf::ConvexShape& shape);
+    std::vector<sf::Vector2f> calcNormals(const Object& o);
+
+    float projectPoint(const sf::Vector2f& axis, const sf::Vector2f& point);
+    Projection projectObject(const sf::Vector2f & axis, const Object& o);
 
     sf::Vector2f intToFloatVector(const sf::Vector2i& v);
     
     bool isCloseEnough(const sf::Vector2i& pointPos, const sf::Vector2i& mousePos);
     
     class ConvexHullSolver {
+
     public:
         ConvexHullSolver(std::vector<sf::Vector2i> vertices);
         ~ConvexHullSolver();
