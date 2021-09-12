@@ -1,5 +1,5 @@
-#ifndef WALL_H
-#define WALL_H
+#ifndef BOUNDARIES_H
+#define BOUNDARIES_H
 #include <SFML/Graphics.hpp>
 #include "Collideable.h"
 
